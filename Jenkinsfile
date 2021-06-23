@@ -10,7 +10,7 @@ job('Wordpress EKS Deployment' ) {
     steps {       
         
         shell('''        
-            echo $AWS_ACCESS_KEY_ID
+            echo "install pip & aws-cli"         
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
             apt-get install -y  curl || true && echo 'Curl already installed'                      
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -19,9 +19,13 @@ job('Wordpress EKS Deployment' ) {
         ''')
 
         shell('''
+            echo "install eksctl"  
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin
+
+            #https://github.com/weaveworks/eksctl/issues/1979
+            #https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
             
             instance_id=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 
@@ -29,8 +33,14 @@ job('Wordpress EKS Deployment' ) {
             --instance-id $instance_id \
             --http-put-response-hop-limit 2 \
             --http-endpoint enabled
+            eksctl create cluster -f  base-wordpress-cluster.yml  || true && echo "cluster is already deployed."         
+        ''')
 
-            eksctl create cluster -f  base-wordpress-cluster.yml           
+         shell('''        
+            echo "create wordPress deployment"                     
+            kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
+            echo "creating storage class"
+            kubectl apply -f wp_storage_class.yml --namespace=eks-wordpress-si3mshady 
         ''')
 
         
