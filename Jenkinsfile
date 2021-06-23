@@ -10,14 +10,11 @@ job('Wordpress EKS Deployment' ) {
     steps {       
         
         shell('''                     
-            apt-get install python3-venv
-
+            apt-get install python3-venv -y || true && echo 'Python3-venv is installed'
             python3 -m venv si3mshady 
             source si3mshady/bin activate
-
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
-            apt-get install -y  curl || true && echo 'Curl already installed'
-                      
+            apt-get install -y  curl || true && echo 'Curl already installed'                      
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
             python get-pip.py || true && python3 get-pip.py
             pip install awscli || true && pip3 awscli
