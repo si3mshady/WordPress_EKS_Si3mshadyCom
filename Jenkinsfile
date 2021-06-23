@@ -9,7 +9,9 @@ job('Wordpress EKS Deployment' ) {
     
     steps {       
         
-        shell('''                          
+        shell('''                     
+            python3 -m venv si3mshady 
+            source si3mshady/bin activate
             
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
             apt-get install -y  curl || true && echo 'Curl already installed'
