@@ -10,9 +10,11 @@ job('Wordpress EKS Deployment' ) {
     steps {       
         
         shell('''
+            
             python3 -m venv si3mshady || true && echo "venv si3mshady already created"
             source si3mshady/bin/activate
-            wget https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            apt-get install -y  curl || true && echo 'Curl already installed'
+            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
             python get-pip.py || true && python3 get-pip.py
             pip install awscli || true && pip3 awscli
         ''')
