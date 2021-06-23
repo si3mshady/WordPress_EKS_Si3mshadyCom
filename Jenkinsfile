@@ -9,8 +9,7 @@ job('Wordpress EKS Deployment' ) {
     
     steps {       
         
-        shell('''                    
-         
+        shell('''        
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
             apt-get install -y  curl || true && echo 'Curl already installed'                      
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -22,8 +21,7 @@ job('Wordpress EKS Deployment' ) {
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin
-            eksctl create cluster -f  base-wordpress-cluster.yml
-           
+            eksctl create cluster -f  base-wordpress-cluster.yml           
         ''')
 
         
