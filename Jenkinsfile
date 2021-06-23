@@ -16,6 +16,16 @@ job('Wordpress EKS Deployment' ) {
             python get-pip.py || true && python3 get-pip.py
             pip install awscli || true && pip3 awscli
         ''')
+
+        shell('''
+        curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
+        tar xz -C /tmp  
+        sudo mv /tmp/eksctl /usr/local/bin
+
+        eks --version
+        ''')
+
+        
     }
 
     
