@@ -9,7 +9,7 @@ job('Wordpress EKS Deployment' ) {
     
     steps {       
         
-        shell('''          
+        shell('''                      
             apt-get install python3-pip -y || true && echo 'python3-pip is installed'
             apt-get install -y  curl || true && echo 'Curl already installed'
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -18,11 +18,10 @@ job('Wordpress EKS Deployment' ) {
         ''')
 
         shell('''
-        curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
-        tar xz -C /tmp  
-        sudo mv /tmp/eksctl /usr/local/bin
-
-        eks --version
+            curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
+            tar xz -C /tmp  
+            sudo mv /tmp/eksctl /usr/local/bin
+            eks --version
         ''')
 
         
