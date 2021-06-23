@@ -15,7 +15,7 @@ job('Wordpress EKS Deployment' ) {
             apt-get install -y  curl || true && echo 'Curl already installed'                      
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
             python get-pip.py || true && python3 get-pip.py
-            pip install awscli || true && pip3 awscli
+            pip install awscli || true && pip3 install awscli
         ''')
 
         shell('''
