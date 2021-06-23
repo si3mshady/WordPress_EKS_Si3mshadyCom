@@ -22,6 +22,7 @@ job('Wordpress EKS Deployment' ) {
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin
+            
             instance_id=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 
             aws ec2 modify-instance-metadata-options \
