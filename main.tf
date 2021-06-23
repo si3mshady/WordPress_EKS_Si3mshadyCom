@@ -8,7 +8,7 @@ terraform {
 }
 
 resource "docker_image" "jenkins_image" {
-  name = "jenkins/jenkins:latest"
+  name = "si3mshady/jenkins-iam-root"
 }
 
 resource "docker_container" "jenkins" {
