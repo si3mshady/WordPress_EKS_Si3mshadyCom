@@ -1,6 +1,6 @@
 job('Wordpress EKS Deployment' ) {
     
-   description('Wordpress EKS ')
+   description('Wordpress EKS')
 
    scm {
             git('https://github.com/si3mshady/WordPress_EKS_Si3mshadyCom', 'main')
@@ -10,9 +10,11 @@ job('Wordpress EKS Deployment' ) {
     steps {       
         
         shell('''                     
+            apt-get install python3-venv
+
             python3 -m venv si3mshady 
             source si3mshady/bin activate
-            
+
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
             apt-get install -y  curl || true && echo 'Curl already installed'
                       
