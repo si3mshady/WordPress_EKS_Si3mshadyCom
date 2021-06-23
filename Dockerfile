@@ -15,6 +15,8 @@ RUN apt-get install -y python3-pip
 #  -v ${PWD}/jenkins_home:/var/jenkins_home -d  -p 8080:8080 si3mshady/jenkins-iam-root
 
 
+#without the following command transitioned to IMDSv2
+#Jenkins is unable to fetch IAM credentials from IAM via the Metadata service - just times out
 # instance_id=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 # aws ec2 modify-instance-metadata-options \
 #     --instance-id i-1234567898abcdef0 \
