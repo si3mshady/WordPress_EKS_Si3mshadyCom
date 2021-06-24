@@ -72,9 +72,6 @@ job('Wordpress EKS Deployment' ) {
         shell('''  
 
             eksctl create cluster -f  base-wordpress-cluster*dev.yml || true && echo 'pass' && \\                     
-        
-            kubectl create namespace eks-wordpress-si3mshady || true   && echo 'pass'  && \\ 
-
             kubectl apply -f ./wp_storage_class*dev.yml --namespace=eks-wordpress-si3mshady || true  && echo 'pass' && \\
 
             kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \\
@@ -82,7 +79,6 @@ job('Wordpress EKS Deployment' ) {
                          
             kubectl apply -f ./persistent_volume_claim*dev.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \\
 
-            kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \\
             
             kubectl apply -f ./mysql_deployment*dev.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass'  && \\    
               
