@@ -25,8 +25,8 @@ job('Wordpress EKS Deployment' ) {
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin
 
+            
 
-            kubectl -n kube-system get cm
 
             #https://github.com/weaveworks/eksctl/issues/1979
             #https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
@@ -43,6 +43,14 @@ job('Wordpress EKS Deployment' ) {
          shell('''        
             
             echo "create wordPress deployment"                     
+
+
+            kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml
+            kubectl -n kube-system get cm
+
+
+
+
             kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
          
 
