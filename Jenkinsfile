@@ -12,7 +12,7 @@ job('Wordpress EKS Deployment' ) {
         shell('''       
             ls -lrth || true & ls 
             cat ./wp_storage_class.yml
-            
+
             echo "install pip & aws-cli"         
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
             apt-get install -y  curl || true && echo 'Curl already installed'                      
@@ -54,7 +54,9 @@ job('Wordpress EKS Deployment' ) {
              '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
               --namespace=eks-wordpress-si3mshady
 
-              kubectl apply -f persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady
+              kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady
+
+              kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady
 
 
         ''')
