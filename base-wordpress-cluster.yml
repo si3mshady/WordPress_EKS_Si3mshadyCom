@@ -2,7 +2,7 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: base-wordpress
+  name: base-wordpress-prod
   region: us-east-1
 
 nodeGroups:
