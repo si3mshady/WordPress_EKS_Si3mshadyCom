@@ -10,4 +10,4 @@ nodeGroups:
     instanceType: t2.small
     desiredCapacity: 3
     ssh:
-      publicKeyName: dragon_us_east_2
+      publicKeyName: dragon
