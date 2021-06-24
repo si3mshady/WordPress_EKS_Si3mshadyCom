@@ -63,15 +63,14 @@ job('Wordpress EKS Deployment' ) {
             sed -i 's/"a.example.com"/"service.si3mshady.com"/g' CNAME.json || true && echo 'pass'  && \\
             sed -i 's/"8.8.8.8"/"\$loadBalancerURL"/g' CNAME.json  || true && echo 'pass'  && \\
 
-            aws route53 change-resource-record-sets \\
-            --hosted-zone-id Z099267523KVY5EITOQ5W \\
+            aws route53 change-resource-record-sets \
+            --hosted-zone-id Z099267523KVY5EITOQ5W \
             --change-batch file://CNAME.json        
         ''')
 
          
-        shell('''  
-
-            eksctl create cluster -f  base-wordpress-cluster*dev.yml || true && echo 'pass' && \\                     
+        shell(''' 
+             eksctl create cluster -f  base-wordpress-cluster*dev.yml || true && echo 'pass' && \\                     
             kubectl apply -f ./wp_storage_class*dev.yml --namespace=eks-wordpress-si3mshady || true  && echo 'pass' && \\
 
             kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \\
@@ -91,8 +90,8 @@ job('Wordpress EKS Deployment' ) {
             sed -i 's/"service.si3mshady.com"/"dev.service.si3mshady.com"/g' CNAME.json || true && echo 'pass'  && \\
             sed -i 's/"\$loadBalancerURL"/"\$loadBalancerDEV"/g' CNAME.json  || true && echo 'pass'  && \\
 
-            aws route53 change-resource-record-sets \\
-            --hosted-zone-id Z099267523KVY5EITOQ5W \\
+            aws route53 change-resource-record-sets \
+            --hosted-zone-id Z099267523KVY5EITOQ5W \
             --change-batch file://CNAME.json                           
                       
         ''')
