@@ -25,6 +25,9 @@ job('Wordpress EKS Deployment' ) {
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin
 
+
+            kubectl -n kube-system get cm
+
             #https://github.com/weaveworks/eksctl/issues/1979
             #https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
             
