@@ -15,8 +15,7 @@ job('Wordpress EKS Deployment' ) {
             apt-get update
             echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
             apt-get install -y kubectl
-
-            echo "install pip & aws-cli"         
+                
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
             apt-get install -y  curl || true && echo 'Curl already installed'                      
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
