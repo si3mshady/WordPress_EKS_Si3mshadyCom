@@ -47,7 +47,7 @@ job('Wordpress EKS Deployment' ) {
             kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
             echo "creating storage class"
 
-            kubectl apply -f wp_storage_class.yml --namespace=eks-wordpress-si3mshady 
+            kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady 
 
             kubectl patch storageclass gp2 -p \
 
