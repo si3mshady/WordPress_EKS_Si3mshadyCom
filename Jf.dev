@@ -1,0 +1,27 @@
+            eksctl create cluster -f  base-wordpress-cluster*dev.yml || true && echo 'pass' && \\                     
+        
+            kubectl create namespace eks-wordpress-si3mshady || true   && echo 'pass'  && \\ 
+
+            kubectl apply -f ./wp_storage_class*dev.yml --namespace=eks-wordpress-si3mshady || true  && echo 'pass' && \\
+
+            kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \\
+            --namespace=eks-wordpress-si3mshady  || true  && echo 'pass' && \\
+                         
+            kubectl apply -f ./persistent_volume_claim*dev.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \\
+
+            kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \\
+            
+            kubectl apply -f ./mysql_deployment*dev.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass'  && \\    
+              
+
+            kubectl apply -f ./wordpress_deployment*dev.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \\                        
+
+            namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}') || true  && echo 'pass' && \\ 
+            loadBalancerDEV=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}') || true && echo 'pass' && \\
+
+            sed -i 's/"service.si3mshady.com"/"dev.service.si3mshady.com"/g' CNAME.json || true && echo 'pass'  && \\
+            sed -i 's/"\$loadBalancerURL"/"\$loadBalancerDEV"/g' CNAME.json  || true && echo 'pass'  && \\
+
+            aws route53 change-resource-record-sets \\
+            --hosted-zone-id Z099267523KVY5EITOQ5W \\
+            --change-batch file://CNAME.json 
