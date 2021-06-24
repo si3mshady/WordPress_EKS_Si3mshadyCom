@@ -9,9 +9,7 @@ job('Wordpress EKS Deployment' ) {
     
     steps {       
         
-        shell('''       
-            ls -lrth || true & ls 
-            cat ./wp_storage_class.yml
+        shell('''                
 
             echo "install pip & aws-cli"         
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
@@ -40,9 +38,7 @@ job('Wordpress EKS Deployment' ) {
         ''')
 
          shell('''        
-            ls -lrth || true & ls
-
-
+            
             echo "create wordPress deployment"                     
             kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
          
@@ -62,7 +58,8 @@ job('Wordpress EKS Deployment' ) {
               kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady \
               || true && echo "mysql pod and service are already deployed"
 
-
+              kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady \
+              || true && echo "wordpress pod and service have already been deployed"
         ''')
 
         
