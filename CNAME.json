@@ -1,12 +1,14 @@
 {
-    "Comment": "CREATE record ",
-    "Changes": [{
-    "Action": "CREATE",
-                "ResourceRecordSet": {
-                            "Name": "a.example.com",
-                            "Type": "CNAME",
-                            "TTL": 300,
-                         "ResourceRecords": [{ "Value": "4.4.4.4"}]
-}}]
+	"Comment": "CREATE record ",
+	"Changes": [{
+		"Action": "CREATE",
+		"ResourceRecordSet": {
+			"Name": "a.example.com",
+			"Type": "CNAME",
+			"TTL": 300,
+			"ResourceRecords": [{
+				"Value": "8.8.8.8"
+			}]
+		}
+	}]
 }
-
