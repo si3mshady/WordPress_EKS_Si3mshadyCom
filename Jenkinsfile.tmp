@@ -17,16 +17,18 @@ job('Wordpress EKS Deployment' ) {
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
             python get-pip.py || true && python3 get-pip.py
             pip install awscli || true && pip3 install awscli
+
+            apt-get update && sudo apt-get install -y apt-transport-https
+            curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+            echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+            apt-get install -y kubectl
         ''')
 
         shell('''
             echo "install eksctl"  
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
             tar xz -C /tmp  
-            mv /tmp/eksctl /usr/local/bin
-          
-
-            
+            mv /tmp/eksctl /usr/local/bin      
 
 
             #https://github.com/weaveworks/eksctl/issues/1979
@@ -39,23 +41,15 @@ job('Wordpress EKS Deployment' ) {
             --http-put-response-hop-limit 2 \
             --http-endpoint enabled
             eksctl create cluster -f  base-wordpress-cluster.yml  || true && echo "cluster is already deployed."         
-              kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml
+            kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml
             kubectl -n kube-system get cm
         ''')
 
          shell('''        
             
             echo "create wordPress deployment"                     
-
-
-           
-
-
-
-
             kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
          
-
             kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady \
             || true && echo "storage class already exists"
 
