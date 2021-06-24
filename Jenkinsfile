@@ -39,9 +39,9 @@ job('Wordpress EKS Deployment' ) {
             --http-endpoint enabled \
             --region us-east-1 && \
 
-            eksctl create cluster -f  base-wordpress-cluster.yml || true && echo 'pass' && \                     
+            eksctl create cluster -f  base-wordpress-cluster.yml || true && echo 'pass' && \\                     
         
-            kubectl create namespace eks-wordpress-si3mshady || true   && echo 'pass'  && \ 
+            kubectl create namespace eks-wordpress-si3mshady || true   && echo 'pass'  && \\ 
 
             kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady || true  && echo 'pass' && \
 
