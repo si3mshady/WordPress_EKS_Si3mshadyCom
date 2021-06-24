@@ -64,6 +64,8 @@ job('Wordpress EKS Deployment' ) {
               kubectl get services --all-namespaces > svc.txt || true & echo "svc.txt exists"
               cat ./svc.txt
 
+              echo $PWD
+
         ''')
 
         
