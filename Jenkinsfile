@@ -9,20 +9,19 @@ job('Wordpress EKS Deployment' ) {
     
     steps {       
         
-        shell('''                
+        shell('''                            
+            apt-get update &&  apt-get install -y apt-transport-https
+            curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |  apt-key add -
+            apt-get update
+            echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+            apt-get install -y kubectl
 
             echo "install pip & aws-cli"         
             apt-get install python3-pip -y || true && echo 'Python3-pip is installed'
             apt-get install -y  curl || true && echo 'Curl already installed'                      
             curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
             python get-pip.py || true && python3 get-pip.py
-            pip install awscli || true && pip3 install awscli
-
-            apt-get update &&  apt-get install -y apt-transport-https
-            curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg |  apt-key add -
-            apt-get update
-            echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-            apt-get install -y kubectl
+            pip install awscli || true && pip3 install awscli           
         ''')
 
         shell('''
@@ -30,8 +29,6 @@ job('Wordpress EKS Deployment' ) {
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin      
-
-
             #https://github.com/weaveworks/eksctl/issues/1979
             #https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
             
@@ -45,8 +42,7 @@ job('Wordpress EKS Deployment' ) {
          
         ''')
 
-         shell('''        
-            
+         shell('''                    
             echo "create wordPress deployment"                     
             kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
          
@@ -76,10 +72,7 @@ job('Wordpress EKS Deployment' ) {
             sed -i 's/4.4.4.4/$loadBalancerURL/g' CNAME.json  
 
             aws route53 change-resource-record-sets \
-            --hosted-zone-id Z099267523KVY5EITOQ5W --change-batch file://CNAME.json
-
-
-          
+            --hosted-zone-id Z099267523KVY5EITOQ5W --change-batch file://CNAME.json          
         ''')
 
         
