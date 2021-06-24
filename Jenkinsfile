@@ -25,8 +25,7 @@ job('Wordpress EKS Deployment' ) {
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin
             eksctl create cluster -f  base-wordpress-cluster.yml &&  \
-            kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml \           
-            || true && echo "cluster is already deployed."         
+            kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml || true && echo "cluster is already deployed."         
             
            
 
