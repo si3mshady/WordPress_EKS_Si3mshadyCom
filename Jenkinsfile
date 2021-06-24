@@ -36,8 +36,8 @@ job('Wordpress EKS Deployment' ) {
             --http-put-response-hop-limit 2 \
             --http-endpoint enabled \
             --region us-east-1 
-            
-            python3 ./deployment_handler.py  && \        
+
+            python3 ./deployment_handler.py  \        
             
             namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}')
 
