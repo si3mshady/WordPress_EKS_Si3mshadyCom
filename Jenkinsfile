@@ -37,7 +37,7 @@ job('Wordpress EKS Deployment' ) {
             --instance-id $instance_id \
             --http-put-response-hop-limit 2 \
             --http-endpoint enabled \
-            --region us-east-1
+            --region us-east-1 && \
 
             eksctl create cluster -f  base-wordpress-cluster.yml || true && echo 'pass' && \                     
         
