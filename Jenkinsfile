@@ -37,7 +37,8 @@ job('Wordpress EKS Deployment' ) {
             aws ec2 modify-instance-metadata-options \
             --instance-id $instance_id \
             --http-put-response-hop-limit 2 \
-            --http-endpoint enabled
+            --http-endpoint enabled \
+            --region us-east-1
             eksctl create cluster -f  base-wordpress-cluster.yml  || true && echo "cluster is already deployed."         
          
         ''')
