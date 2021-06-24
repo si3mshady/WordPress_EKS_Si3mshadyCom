@@ -45,9 +45,10 @@ job('Wordpress EKS Deployment' ) {
 
             echo "create wordPress deployment"                     
             kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
-            echo "creating storage class"
+         
 
-            kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady 
+            kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady \
+            || true && echo "storage class already exists"
 
             kubectl patch storageclass gp2 -p \
 
@@ -56,7 +57,11 @@ job('Wordpress EKS Deployment' ) {
 
               kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady
 
-              kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady
+              kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady \
+              || true && echo "generic password has already been created"
+
+              kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady \
+              || true && echo "mysql pod and service are already deployed"
 
 
         ''')
