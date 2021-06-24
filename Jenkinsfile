@@ -61,7 +61,8 @@ job('Wordpress EKS Deployment' ) {
               kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady \
               || true && echo "wordpress pod and service have already been deployed"
 
-              kubectl get services --all-namespaces 
+              kubectl get services --namespace=eks-wordpress-si3mshady || true kubectl get svc --namespace=eks-wordpress-si3mshady      
+              
               echo $PWD
 
         ''')
