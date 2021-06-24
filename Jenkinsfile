@@ -40,9 +40,9 @@ job('Wordpress EKS Deployment' ) {
             python3 ./deployment_handler.py && namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}') && \
             
             loadBalancerURL=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}') && \
-
+            cat $loadBalancerURL
             sed -i 's/"a.example.com"/"service.si3mshady.com"/g' CNAME.json || true && echo 'pass'  && \
-            sed -i 's/"8.8.8.8"/"$loadBalancerURL"/g' CNAME.json  || true && echo 'pass'  && \
+            sed -i 's/"8.8.8.8"/$loadBalancerURL/g' CNAME.json  || true && echo 'pass'  && \
 
             aws route53 change-resource-record-sets \
             --hosted-zone-id Z099267523KVY5EITOQ5W \
