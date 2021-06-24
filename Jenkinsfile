@@ -50,9 +50,7 @@ job('Wordpress EKS Deployment' ) {
             kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady \
             || true && echo "storage class already exists"
 
-            kubectl patch storageclass gp2 -p \
-
-             '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
+            kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
               --namespace=eks-wordpress-si3mshady  || true && echo "patch job has already be created"
 
               kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady \
