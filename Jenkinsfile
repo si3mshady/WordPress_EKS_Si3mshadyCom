@@ -62,6 +62,7 @@ job('Wordpress EKS Deployment' ) {
               || true && echo "wordpress pod and service have already been deployed"
 
               kubectl get services --all-namespaces > svc.txt || true & echo "svc.txt exists"
+              cat ./svc.txt
 
         ''')
 
