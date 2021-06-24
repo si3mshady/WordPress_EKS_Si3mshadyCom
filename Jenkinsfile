@@ -53,9 +53,10 @@ job('Wordpress EKS Deployment' ) {
             kubectl patch storageclass gp2 -p \
 
              '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
-              --namespace=eks-wordpress-si3mshady
+              --namespace=eks-wordpress-si3mshady ||  || true && echo "patch job has already be created"
 
-              kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady
+              kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady \
+               || true && echo "pvc has already been created"
 
               kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady \
               || true && echo "generic password has already been created"
