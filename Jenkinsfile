@@ -20,14 +20,16 @@ job('Wordpress EKS Deployment' ) {
         ''')
 
         shell('''
-            echo "install eksctl"  
+            echo "install eksctl" 
+            kubectl -n kube-system get cm 
+            kubectl -n kube-system get cm
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin
             eksctl create cluster -f  base-wordpress-cluster.yml &&  \
-            kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml || true && echo "cluster is already deployed."         
+            || true && echo "cluster is already deployed."         
             
-           
+            kubectl -n kube-system get cm
 
             
 
