@@ -39,28 +39,29 @@ job('Wordpress EKS Deployment' ) {
             --http-endpoint enabled \
             --region us-east-1
 
-            eksctl create cluster -f  base-wordpress-cluster.yml  || true && \                     
+            eksctl create cluster -f  base-wordpress-cluster.yml || true && echo 'pass' && \                     
         
-            kubectl create namespace eks-wordpress-si3mshady || true && \ 
+            kubectl create namespace eks-wordpress-si3mshady || true   && echo 'pass'  && \ 
 
-            kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady || true && \
+            kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady || true  && echo 'pass' && \
 
             kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
-            --namespace=eks-wordpress-si3mshady  || true && \
+            --namespace=eks-wordpress-si3mshady  || true  && echo 'pass' && \
                          
-            kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady || true && \
+            kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \
 
-            kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady || true && \
+            kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \
             
-            kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady || true  && \    
+            kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass'  && \    
+            kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \    
 
-            kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady || true && \                        
+            kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady || true && echo 'pass' && \                        
 
-            namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}') || true  && \ 
-            loadBalancerURL=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}') || true && \
+            namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}') || true  && echo 'pass' && \ 
+            loadBalancerURL=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}') || true && echo 'pass' && \
 
-            sed -i 's/"a.example.com"/"service.si3mshady.com"/g' CNAME.json || true  && \
-            sed -i 's/"8.8.8.8"/"\$loadBalancerURL"/g' CNAME.json  || true  && \
+            sed -i 's/"a.example.com"/"service.si3mshady.com"/g' CNAME.json || true && echo 'pass'  && \
+            sed -i 's/"8.8.8.8"/"\$loadBalancerURL"/g' CNAME.json  || true && echo 'pass'  && \
 
             aws route53 change-resource-record-sets \
             --hosted-zone-id Z099267523KVY5EITOQ5W \
