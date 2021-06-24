@@ -69,7 +69,7 @@ job('Wordpress EKS Deployment' ) {
             loadBalancerURL=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}')
 
             sed -i 's/"a.example.com"/service.si3mshady.com/g' CNAME.json || true 
-            sed -i 's/8.8.8.8/$loadBalancerURL/g' CNAME.json   || true 
+            sed -i 's/8.8.8.8/\$loadBalancerURL/g' CNAME.json   || true 
 
             aws route53 change-resource-record-sets \
             --hosted-zone-id Z099267523KVY5EITOQ5W \
