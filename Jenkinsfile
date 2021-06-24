@@ -39,7 +39,7 @@ job('Wordpress EKS Deployment' ) {
             --http-put-response-hop-limit 2 \
             --http-endpoint enabled \
             --region us-east-1
-            
+
             eksctl create cluster -f  base-wordpress-cluster.yml  || true && \                     
         
             kubectl create namespace eks-wordpress-si3mshady || true && \ 
@@ -60,8 +60,8 @@ job('Wordpress EKS Deployment' ) {
             namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}') || true  && \ 
             loadBalancerURL=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}') || true && \
 
-            sed -i 's/"a.example.com"/service.si3mshady.com/g' CNAME.json || true  && \
-            sed -i 's/8.8.8.8/\$loadBalancerURL/g' CNAME.json  || true  && \
+            sed -i 's/"a.example.com"/"service.si3mshady.com"/g' CNAME.json || true  && \
+            sed -i 's/"8.8.8.8"/"\$loadBalancerURL"/g' CNAME.json  || true  && \
 
             aws route53 change-resource-record-sets \
             --hosted-zone-id Z099267523KVY5EITOQ5W \
