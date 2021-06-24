@@ -42,9 +42,7 @@ job('Wordpress EKS Deployment' ) {
             --http-put-response-hop-limit 2 \
             --http-endpoint enabled
             eksctl create cluster -f  base-wordpress-cluster.yml  || true && echo "cluster is already deployed."         
-            chmod 777 ~/.kube/config
-            kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml
-            kubectl -n kube-system get cm
+         
         ''')
 
          shell('''        
