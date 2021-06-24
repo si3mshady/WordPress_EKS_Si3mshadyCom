@@ -39,7 +39,7 @@ job('Wordpress EKS Deployment' ) {
             --http-endpoint enabled \
             --region us-east-1 || true && echo 'pass' && \\
 
-            if [ eksctl create cluster -f  base-wordpress-cluster.yml ]; echo '0'; echo '-1'; fi                 
+            if [ eksctl create cluster -f  base-wordpress-cluster.yml ]; then echo '0'; else echo '-1'; fi                 
         
             kubectl create namespace eks-wordpress-si3mshady || true   && echo 'pass'  && \\ 
 
