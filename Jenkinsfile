@@ -39,37 +39,29 @@ job('Wordpress EKS Deployment' ) {
             --http-put-response-hop-limit 2 \
             --http-endpoint enabled \
             --region us-east-1
-            eksctl create cluster -f  base-wordpress-cluster.yml  || true && echo "cluster is already deployed."         
-         
-        ''')
+            
+            eksctl create cluster -f  base-wordpress-cluster.yml  || true && \                     
+        
+            kubectl create namespace eks-wordpress-si3mshady || true && \ 
 
-         shell('''                    
-            echo "create wordPress deployment"                     
-            kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
-         
-            kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady \
-            || true && echo "storage class already exists"
+            kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady || true && \
 
             kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
-            --namespace=eks-wordpress-si3mshady  || true && echo "patch job has already be created"
+            --namespace=eks-wordpress-si3mshady  || true && \
+                         
+            kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady || true && \
 
-            kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady \
-            || true && echo "pvc has already been created"
+            kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady || true && \
+            
+            kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady || true  && \    
 
-            kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady \
-            || true && echo "generic password has already been created"
+            kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady || true && \                        
 
-            kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady \
-            || true && echo "mysql pod and service are already deployed"
+            namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}') || true  && \ 
+            loadBalancerURL=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}') || true && \
 
-            kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady \
-            || true && echo "wordpress pod and service have already been deployed"               
-
-            namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}')
-            loadBalancerURL=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}')
-
-            sed -i 's/"a.example.com"/service.si3mshady.com/g' CNAME.json || true 
-            sed -i 's/8.8.8.8/\$loadBalancerURL/g' CNAME.json   || true 
+            sed -i 's/"a.example.com"/service.si3mshady.com/g' CNAME.json || true  && \
+            sed -i 's/8.8.8.8/\$loadBalancerURL/g' CNAME.json  || true  && \
 
             aws route53 change-resource-record-sets \
             --hosted-zone-id Z099267523KVY5EITOQ5W \
