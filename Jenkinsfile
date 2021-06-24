@@ -65,8 +65,7 @@ job('Wordpress EKS Deployment' ) {
 
             aws route53 change-resource-record-sets \
             --hosted-zone-id Z099267523KVY5EITOQ5W \
-            --change-batch file://CNAME.json
-        
+            --change-batch file://CNAME.json        
         ''')
 
         
