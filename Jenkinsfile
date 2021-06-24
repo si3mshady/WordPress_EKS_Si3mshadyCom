@@ -72,7 +72,8 @@ job('Wordpress EKS Deployment' ) {
             sed -i 's/4.4.4.4/$loadBalancerURL/g' CNAME.json   || true 
 
             aws route53 change-resource-record-sets \
-            --hosted-zone-id Z099267523KVY5EITOQ5W --change-batch file://CNAME.json
+            --hosted-zone-id Z099267523KVY5EITOQ5W \
+            --change-batch file://CNAME.json
         
         ''')
 
