@@ -27,9 +27,7 @@ job('Wordpress EKS Deployment' ) {
             echo "install eksctl"  
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \
             tar xz -C /tmp  
-            mv /tmp/eksctl /usr/local/bin      
-            #https://github.com/weaveworks/eksctl/issues/1979
-            #https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
+            mv /tmp/eksctl /usr/local/bin                
             
             instance_id=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 
@@ -37,29 +35,9 @@ job('Wordpress EKS Deployment' ) {
             --instance-id $instance_id \
             --http-put-response-hop-limit 2 \
             --http-endpoint enabled \
-            --region us-east-1 || true && echo 'pass' && \\
-
-            if [ eksctl create cluster -f  base-wordpress-cluster.yml ]; then echo '0'; else echo '1'; fi  
-
-            if [ kubectl create namespace eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi  
-
-            if [ kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi  
-                           
-            if [ kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
-            --namespace=eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi  
-
-            if [ kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi  
-
-            if [ kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi  
-
-            if [  kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi 
-
-            if [ kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi 
-
-            if [ kubectl create namespace eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi 
-
-            if [ kubectl create namespace eks-wordpress-si3mshady ]; then echo '0'; else echo '1'; fi 
+            --region us-east-1 
             
+            python3 ./deployment_handler.py  && \        
             
             namespace=$(kubectl get ns | grep -i si3ms |  awk '{print $1}')
 
@@ -74,36 +52,7 @@ job('Wordpress EKS Deployment' ) {
         ''')
 
          
-        shell(''' 
-            if [ eksctl create cluster -f  base-wordpress-cluster*dev.yml ]; then echo '0'; else echo '1'; fi 
-
-            if [ kubectl create namespace eks-wordpress-si3mshady-dev ]; then echo '0'; else echo '1'; fi  
-
-
-            if [ kubectl apply -f ./wp_storage_class*dev.yml --namespace=eks-wordpress-si3mshady-dev ]; then echo '0'; else echo '1'; fi  
-                             
-            if [ kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
-            --namespace=eks-wordpress-si3mshady-dev ]; then echo '0'; else echo '1'; fi  
-
-            if [ kubectl apply -f ./persistent_volume_claim*dev.yml --namespace=eks-wordpress-si3mshady-dev ]; then echo '0'; else echo '1'; fi  
-                         
-            if [  kubectl apply -f ./mysql_deployment*dev.yml --namespace=eks-wordpress-si3mshady-dev ]; then echo '0'; else echo '1'; fi 
-
-            if [ kubectl apply -f ./wordpress_deployment*dev.yml --namespace=eks-wordpress-si3mshady-dev ]; then echo '0'; else echo '1'; fi 
-                     
-
-            namespace=$(kubectl get ns  | grep -i dev |  awk '{print $1}') || true  && echo 'pass' && \\ 
-            loadBalancerDEV=$(kubectl get svc --namespace=$namespace | grep LoadBalancer | awk '{print $4}') || true && echo 'pass' && \\
-
-            sed -i 's/"service.si3mshady.com"/"dev.service.si3mshady.com"/g' CNAME.json || true && echo 'pass'  && \\
-            sed -i 's/"\$loadBalancerURL"/"\$loadBalancerDEV"/g' CNAME.json  || true && echo 'pass'  && \\
-
-            aws route53 change-resource-record-sets \
-            --hosted-zone-id Z099267523KVY5EITOQ5W \
-            --change-batch file://CNAME.json                           
-                      
-        ''')
-
+    
         
     }
 
