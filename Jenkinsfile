@@ -44,9 +44,13 @@ job('Wordpress EKS Deployment' ) {
             kubectl apply -f wp_storage_class.yml --namespace=eks-wordpress-si3mshady 
 
             kubectl patch storageclass gp2 -p \
-            
+
              '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
               --namespace=eks-wordpress-si3mshady
+
+              kubectl apply -f persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady
+
+
         ''')
 
         
