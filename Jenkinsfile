@@ -24,61 +24,62 @@ job('Wordpress EKS Deployment' ) {
             curl --silent --location "https://github.com/weaveworks/eksctl/releases/download/latest_release/eksctl_$(uname -s)_amd64.tar.gz" | \\
             tar xz -C /tmp  
             mv /tmp/eksctl /usr/local/bin
+            kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml
+            kubectl -n kube-system get cm
 
             
 
 
-            #https://github.com/weaveworks/eksctl/issues/1979
-            #https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
+            // #https://github.com/weaveworks/eksctl/issues/1979
+            // #https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
             
-            instance_id=$(curl http://169.254.169.254/latest/meta-data/instance-id)
+            // instance_id=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 
-            aws ec2 modify-instance-metadata-options \
-            --instance-id $instance_id \
-            --http-put-response-hop-limit 2 \
-            --http-endpoint enabled
-            eksctl create cluster -f  base-wordpress-cluster.yml  || true && echo "cluster is already deployed."         
+            // aws ec2 modify-instance-metadata-options \
+            // --instance-id $instance_id \
+            // --http-put-response-hop-limit 2 \
+            // --http-endpoint enabled
+            // eksctl create cluster -f  base-wordpress-cluster.yml  || true && echo "cluster is already deployed."         
         ''')
 
          shell('''        
             
-            echo "create wordPress deployment"                     
+            // echo "create wordPress deployment"                     
 
 
-            kubectl -n kube-system get configmap aws-auth -o yaml > aws-auth-configmap.yaml
-            kubectl -n kube-system get cm
+           
 
 
 
 
-            kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
+            // kubectl create namespace eks-wordpress-si3mshady  || true && echo "namespace eks-wordpress-si3mshady exists."     
          
 
-            kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady \
-            || true && echo "storage class already exists"
+            // kubectl apply -f ./wp_storage_class.yml --namespace=eks-wordpress-si3mshady \
+            // || true && echo "storage class already exists"
 
-            kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
-              --namespace=eks-wordpress-si3mshady  || true && echo "patch job has already be created"
+            // kubectl patch storageclass gp2 -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}' \
+            //   --namespace=eks-wordpress-si3mshady  || true && echo "patch job has already be created"
 
-              kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady \
-               || true && echo "pvc has already been created"
+            //   kubectl apply -f ./persistent_volume_claim.yml --namespace=eks-wordpress-si3mshady \
+            //    || true && echo "pvc has already been created"
 
-              kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady \
-              || true && echo "generic password has already been created"
+            //   kubectl create secret generic mysql-pass --from-literal=password=12345678 --namespace=eks-wordpress-si3mshady \
+            //   || true && echo "generic password has already been created"
 
-              kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady \
-              || true && echo "mysql pod and service are already deployed"
+            //   kubectl apply -f ./mysql_deployment.yml --namespace=eks-wordpress-si3mshady \
+            //   || true && echo "mysql pod and service are already deployed"
 
-              kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady \
-              || true && echo "wordpress pod and service have already been deployed"
+            //   kubectl apply -f ./wordpress_deployment.yml --namespace=eks-wordpress-si3mshady \
+            //   || true && echo "wordpress pod and service have already been deployed"
 
-              kubectl get services --namespace=eks-wordpress-si3mshady || true kubectl get svc --namespace=eks-wordpress-si3mshady      
+            //   kubectl get services --namespace=eks-wordpress-si3mshady || true kubectl get svc --namespace=eks-wordpress-si3mshady      
 
 
-              echo $PWD
-              which kubectl 
-              whereis kubectl 
-              whoami 
+            //   echo $PWD
+            //   which kubectl 
+            //   whereis kubectl 
+            //   whoami 
 
         ''')
 
